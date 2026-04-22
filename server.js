@@ -6,7 +6,6 @@ const cors = require("cors");
 const qs = require("qs");
 const Airtable = require("airtable");
 
-
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -16,10 +15,8 @@ app.use(cors());
 const config = {
     key: "PU5U8NI7O2",
     salt: "4QHTXHY9HP",
-    env: "prod", // or "test"
+    env: "prod",
 };
-
-
 
 // ✅ Airtable Config
 const AIRTABLE_API_KEY = "patNO8vCm7vWoQ9gx.cb296541f27a023e1aa17b67e9adfb7e31e0199be521ed7db0484a8a17796d6f";
@@ -102,8 +99,7 @@ app.post("/api/payment", async (req, res) => {
     }
 });
 
-
-// ✅ Payment Success (No Webhook)
+// ✅ Payment Success
 app.post("/api/easebuzz/success", async (req, res) => {
     console.log("✅ Payment Success Callback:", req.body);
 
@@ -117,27 +113,23 @@ app.post("/api/easebuzz/success", async (req, res) => {
 
         if (records.length > 0) {
             const recordId = records[0].id;
-
             await base(AIRTABLE_TABLE_NAME).update(recordId, {
                 "Payment Status": "Success",
             });
-
-            console.log(`Successfully updated paid for txnid ${txnid}`);
+            console.log(`✅ Updated to Success for txnid ${txnid}`);
         } else {
             console.log(`⚠️ No record found for txnid: ${txnid}`);
         }
 
-
-        // Redirect user back to Angular success page
-        return res.redirect("https://anandatirumaladevasthanam.com/payment-status.html?status=success&txnid=${encodeURIComponent(txnid)}");
+        // ✅ FIX: Use backticks so txnid interpolates correctly
+        return res.redirect(`https://anandatirumaladevasthanam.com/payment-status.html?status=success&txnid=${encodeURIComponent(txnid)}`);
     } catch (error) {
         console.error("❌ Error updating Airtable:", error);
         res.status(500).send("Error updating Airtable record");
     }
 });
 
-
-// ✅ Payment Failure (No Webhook)
+// ✅ Payment Failure
 app.post("/api/easebuzz/failure", async (req, res) => {
     console.log("❌ Payment Failed Callback:", req.body);
 
@@ -151,24 +143,21 @@ app.post("/api/easebuzz/failure", async (req, res) => {
 
         if (records.length > 0) {
             const recordId = records[0].id;
-
             await base(AIRTABLE_TABLE_NAME).update(recordId, {
                 "Payment Status": "Failed",
             });
-
             console.log(`❌ Updated to Failed for txnid ${txnid}`);
         } else {
             console.log(`⚠️ No record found for txnid: ${txnid}`);
         }
 
-        // Redirect user back to Angular failed page
-        return res.redirect("https://anandatirumaladevasthanam.com/payment-status.html?status=failed&txnid=${encodeURIComponent(txnid)}");
+        // ✅ FIX: Use backticks so txnid interpolates correctly
+        return res.redirect(`https://anandatirumaladevasthanam.com/payment-status.html?status=failed&txnid=${encodeURIComponent(txnid)}`);
     } catch (error) {
         console.error("❌ Error updating failure status:", error);
         res.status(500).send("Error updating Airtable record");
     }
 });
-
 
 // ✅ Start Server
 const PORT = process.env.PORT || 3000;
