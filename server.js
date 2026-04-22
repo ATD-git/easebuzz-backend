@@ -161,3 +161,72 @@ app.post("/api/payment", async (req, res) => {
         });
     }
 });
+
+// ✅ Payment Success Callback
+app.post("/api/easebuzz/success", async (req, res) => {
+    console.log("✅ Payment Success Callback:", req.body);
+    const txnid = req.body.txnid;
+    if (!txnid) return res.status(400).send("Missing txnid");
+
+    try {
+        const records = await base(AIRTABLE_TABLE_NAME)
+            .select({ filterByFormula: `{txnid} = '${txnid}'` })
+            .firstPage();
+
+        if (records.length > 0) {
+            await base(AIRTABLE_TABLE_NAME).update(records[0].id, {
+                "Payment Status": "Success",
+            });
+            console.log(`✅ Updated to Success for txnid ${txnid}`);
+        } else {
+            console.log(`⚠️ No Airtable record found for txnid: ${txnid}`);
+        }
+
+        return res.redirect(
+            `https://anandatirumaladevasthanam.com/payment-status.html?status=success&txnid=${encodeURIComponent(txnid)}`
+        );
+    } catch (error) {
+        console.error("❌ Airtable update error (success):", error);
+        // Still redirect so user isn't stuck
+        return res.redirect(
+            `https://anandatirumaladevasthanam.com/payment-status.html?status=success&txnid=${encodeURIComponent(txnid)}`
+        );
+    }
+});
+
+// ✅ Payment Failure Callback
+app.post("/api/easebuzz/failure", async (req, res) => {
+    console.log("❌ Payment Failed Callback:", req.body);
+    const txnid = req.body.txnid;
+    if (!txnid) return res.status(400).send("Missing txnid");
+
+    try {
+        const records = await base(AIRTABLE_TABLE_NAME)
+            .select({ filterByFormula: `{txnid} = '${txnid}'` })
+            .firstPage();
+
+        if (records.length > 0) {
+            await base(AIRTABLE_TABLE_NAME).update(records[0].id, {
+                "Payment Status": "Failed",
+            });
+            console.log(`❌ Updated to Failed for txnid ${txnid}`);
+        } else {
+            console.log(`⚠️ No Airtable record found for txnid: ${txnid}`);
+        }
+
+        return res.redirect(
+            `https://anandatirumaladevasthanam.com/payment-status.html?status=failed&txnid=${encodeURIComponent(txnid)}`
+        );
+    } catch (error) {
+        console.error("❌ Airtable update error (failure):", error);
+        return res.redirect(
+            `https://anandatirumaladevasthanam.com/payment-status.html?status=failed&txnid=${encodeURIComponent(txnid)}`
+        );
+    }
+});
+
+// ─── Health check ───
+app.get("/", (req, res) => res.json({ status: "ok", message: "ATD Payment Server Running" }));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
