@@ -25,7 +25,7 @@ const config = {
 ========================================= */
 const AIRTABLE_API_KEY = "patNO8vCm7vWoQ9gx.cb296541f27a023e1aa17b67e9adfb7e31e0199be521ed7db0484a8a17796d6f";
 const AIRTABLE_BASE_ID = "appQwYV1wEzK1hfWz";
-const AIRTABLE_TABLE_NAME = "tbl9sWfgAwYrP3mCf";
+const AIRTABLE_TABLE_NAME = "tblF8fQK0ncgL0sbi";
 
 const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
 
