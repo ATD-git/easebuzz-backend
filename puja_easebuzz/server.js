@@ -151,6 +151,30 @@ app.post("/api/payment", async (req, res) => {
     }
 });
 
+
+app.get("/api/verify-payment", async (req, res) => {
+    const { txnid } = req.query;
+
+    if (!txnid) {
+        return res.status(400).json({ status: "error", message: "txnid required" });
+    }
+
+    try {
+        const records = await base(AIRTABLE_TABLE_NAME)
+            .select({ filterByFormula: `{Transaction ID}='${txnid}'` })
+            .firstPage();
+
+        if (records.length > 0) {
+            return res.json({ status: "success", data: records[0].fields });
+        } else {
+            return res.json({ status: "failed" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ status: "error" });
+    }
+});
+
 /* =========================================
    ✅ PAYMENT SUCCESS
 ========================================= */
