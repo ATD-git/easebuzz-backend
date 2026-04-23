@@ -205,7 +205,9 @@ app.post("/api/easebuzz/success", async (req, res) => {
         res.status(500).send("Error updating Airtable");
     }
 });
-
+app.get("/hello", (req, res) => {
+    res.send("Hello working");
+});
 /* =========================================
    ❌ PAYMENT FAILURE
 ========================================= */
