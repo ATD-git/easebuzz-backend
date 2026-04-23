@@ -174,7 +174,7 @@ app.post("/api/easebuzz/success", async (req, res) => {
         }
 
         // Redirect to frontend success page
-        const frontendUrl = `https://atd-archana-sava.onrender.com/payment-status.html?status=success&txnid=${encodeURIComponent(txnid)}`;
+        const frontendUrl = `https://anandtirumaladevasthanam.com/payment-status.html?status=success&txnid=${encodeURIComponent(txnid)}`;
         return res.redirect(frontendUrl);
     } catch (err) {
         console.error(err);
@@ -205,7 +205,7 @@ app.post("/api/easebuzz/failure", async (req, res) => {
         }
 
         // Redirect to frontend failure page
-        const frontendUrl = `https://atd-archana-sava.onrender.com/payment-status.html?status=failed&txnid=${encodeURIComponent(txnid)}`;
+        const frontendUrl = `https://anandtirumaladevasthanam.com/payment-status.html?status=failed&txnid=${encodeURIComponent(txnid)}`;
         return res.redirect(frontendUrl);
     } catch (err) {
         console.error(err);
