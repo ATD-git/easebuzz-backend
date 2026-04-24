@@ -98,9 +98,9 @@ app.post("/api/payment", async (req, res) => {
 
             // 🔁 CALLBACK URLs
             surl:
-                "https://easebuzz-backend.onrender.com/api/easebuzz/success",
+                "https://api.anandatirumaladevasthanam.com/api/easebuzz/success",
             furl:
-                "https://easebuzz-backend.onrender.com/api/easebuzz/failure",
+                "https://api.anandatirumaladevasthanam.com/api/easebuzz/failure",
 
             // Pass along user-defined fields
             udf1: data.udf1 || '',
